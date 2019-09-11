@@ -1,0 +1,10 @@
+[
+  {"key":"welcome","icon":"table","title":"Welcome","child":[]},
+  {"key":"testPage","icon":"table","title":"TestPage","child":[
+    {"key":"testPage01","title":"TestPage01"}
+  ]},
+  {"key":"heartBeatMonitor","icon":"heart","title":"心跳监控","child":[
+    {"key":"Z5MdDataTrans","title":"Z5MdDataTrans"},
+    {"key":"Z9MdDataTransV2","title":"Z9MdDataTransV2"}
+  ]}
+]

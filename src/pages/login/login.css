@@ -1,0 +1,22 @@
+.login-form {
+    border-radius: 5px;
+    padding: 60px;
+
+    position: absolute;
+    width:420px;
+    height:420px;
+    left:50%;
+    top:50%;
+    margin-left:-210px;
+    margin-top:-210px;
+
+    background: white;
+}
+
+.VersionInfo {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    z-index: 999;
+    color:white;
+}
