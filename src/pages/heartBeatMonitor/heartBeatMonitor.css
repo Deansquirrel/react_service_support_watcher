@@ -1,0 +1,33 @@
+.heartbeat_total_info_card {
+    background: white;
+    padding: 20px 24px;
+}
+
+.heartbeat_total_info_card_title {
+    width: 100%;
+    vertical-align: middle;
+    font-size: 125%;
+}
+
+.heartbeat_total_info_card_title_tips {
+    float: right;
+    text-align: left;
+    text-wrap: none;
+}
+
+.heartbeat_total_info_card_content {
+    width: 100%;
+    margin: 20px 0 0;
+    text-align: left;
+    text-wrap: none;
+    font-size:200%;
+}
+
+.heartbeat_customer_info {
+    background: white;
+    padding: 16px;
+}
+
+.heartbeat_customer_info_detail {
+
+}

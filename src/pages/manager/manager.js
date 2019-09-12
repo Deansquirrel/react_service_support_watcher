@@ -2,8 +2,10 @@ import React, {Component} from "react";
 import PropTypes from 'prop-types';
 import {combineReducers,createStore} from "redux";
 
-import "./manager.css"
 import "../../App.css"
+import "../common.css"
+import "./manager.css"
+
 import {Button,Layout,Icon,Menu} from "antd";
 
 import {managerState} from "./reducer";
@@ -19,8 +21,9 @@ import {Test} from "../test/test";
 import {GetMenuOpenKeys, GetMenuSelectedKeys} from "./common";
 import {GetMenuData} from "../../data/common";
 import {HeartBeatMonitor} from "../heartBeatMonitor/heartBeatMonitor";
+import {CommonBottom} from "../common";
 
-const { Header, Sider, Content } = Layout;
+const { Header, Sider } = Layout;
 const { SubMenu } = Menu;
 
 const defaultState = {
@@ -151,9 +154,8 @@ export class Manager extends Component {
                                 </Button>
                             </div>
                         </Header>
-                        <Content style={{margin: '24px 16px',padding: 24,background: '#fff'}}>
-                            <PageContent style={{height:'100%'}} />
-                        </Content>
+                        <PageContent/>
+                        <CommonBottom/>
                     </Layout>
                 </Layout>
             </div>

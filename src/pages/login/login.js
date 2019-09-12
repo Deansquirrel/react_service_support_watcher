@@ -5,6 +5,7 @@ import { Form,Icon, Input,Button,message } from 'antd';
 import uuid from "uuid";
 
 import "./login.css"
+import "../common.css"
 import {combineReducers, createStore} from "redux";
 import {loginState} from "./reducer";
 import {VersionAction,
@@ -143,42 +144,44 @@ class LoginFormR extends React.Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         return (
-            <div className={"login-form"}>
-                <h1>Login in</h1>
-                <Form style={{marginTop:'50px'}} onSubmit={this.handleSubmit}>
-                     <Form.Item>
-                         {getFieldDecorator('username', {
-                             rules: [{ required: true, message: 'Please input your username!' }],
-                         })(
+            <div>
+                <div className={"login-form"}>
+                    <h1>Login in</h1>
+                    <Form style={{marginTop:'50px'}} onSubmit={this.handleSubmit}>
+                         <Form.Item>
+                             {getFieldDecorator('username', {
+                                 rules: [{ required: true, message: 'Please input your username!' }],
+                             })(
+                                 <Input size={"large"}
+                                     prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                     placeholder="Username"
+                                 />,
+                             )}
+                         </Form.Item>
+                        <Form.Item>
+                              {getFieldDecorator('password', {
+                                rules: [{ required: true, message: 'Please input your Password!' }],
+                                })(
                              <Input size={"large"}
-                                 prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                 placeholder="Username"
+                                 prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                 type="password"
+                                 placeholder="Password"
                              />,
                          )}
-                     </Form.Item>
-                    <Form.Item>
-                          {getFieldDecorator('password', {
-                            rules: [{ required: true, message: 'Please input your Password!' }],
-                            })(
-                         <Input size={"large"}
-                             prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                             type="password"
-                             placeholder="Password"
-                         />,
-                     )}
-                    </Form.Item>
-                    <Form.Item>
-                        <Button
-                            loading={store.getState().loginState.loggingIn}
-                            type="primary"
-                            style={{width:'100%',marginTop:'30px'}}
-                            size={"large"}
-                            htmlType="submit"
-                            className="login-form-button">
-                            {store.getState().loginState.loggingIn?"Logging in":"Log in"}
-                        </Button>
-                    </Form.Item>
-                </Form>
+                        </Form.Item>
+                        <Form.Item>
+                            <Button
+                                loading={store.getState().loginState.loggingIn}
+                                type="primary"
+                                style={{width:'100%',marginTop:'30px'}}
+                                size={"large"}
+                                htmlType="submit"
+                                className="login-form-button">
+                                {store.getState().loginState.loggingIn?"Logging in":"Log in"}
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </div>
             </div>
         )
     }

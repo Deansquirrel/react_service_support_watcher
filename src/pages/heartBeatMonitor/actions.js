@@ -27,3 +27,10 @@ export const CustomerListAction = (list=[]) => (
         customerList:list,
     }
 );
+
+export const HeartBeatDataAction = (d=[]) => (
+    {
+        type:C.HeartBeatData,
+        heartbeatData:d,
+    }
+);

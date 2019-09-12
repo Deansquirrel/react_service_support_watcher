@@ -1,0 +1,17 @@
+.VersionInfo {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    z-index: 999;
+    color:white;
+}
+
+.ContentMargin {
+    margin:24px 16px;
+    padding: 24px;
+}
+
+.CommonBottom {
+    text-align: center;
+    margin: 32px 16px 48px 16px;
+}

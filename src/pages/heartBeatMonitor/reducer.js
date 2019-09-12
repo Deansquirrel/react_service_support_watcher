@@ -22,6 +22,11 @@ export const heartBeatMonitorState = (state={},action={}) => {
                 ...state,
                 customerList:action.customerList,
             };
+        case C.HeartBeatData:
+            return {
+                ...state,
+                heartbeatData:action.heartbeatData,
+            };
         default:
             return state;
     }

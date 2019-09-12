@@ -12,11 +12,3 @@
 
     background: white;
 }
-
-.VersionInfo {
-    position: absolute;
-    bottom: 16px;
-    left: 16px;
-    z-index: 999;
-    color:white;
-}

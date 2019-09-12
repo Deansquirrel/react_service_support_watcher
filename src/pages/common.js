@@ -1,4 +1,15 @@
 import axios from "axios";
+import React from "react";
+
+import "./common.css"
+
+export const CommonBottom = () => {
+    return (
+        <div className={"CommonBottom"}>
+            @
+        </div>
+    )
+};
 
 export const GetWsAddress = async (successFunc = f => f, errFunc = f => f) => {
     let sysConfig = {};
