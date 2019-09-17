@@ -21,13 +21,6 @@ export const CustomerAction = (customer="") => (
     }
 );
 
-export const CustomerListAction = (list=[]) => (
-    {
-        type:C.CustomerList,
-        customerList:list,
-    }
-);
-
 export const HeartBeatDataAction = (d=[]) => (
     {
         type:C.HeartBeatData,

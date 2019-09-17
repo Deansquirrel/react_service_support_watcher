@@ -45,7 +45,7 @@
     "clientName": "0.0.4 Build20190619",
     "heartBeat": "2019-09-12 15:06:33.390",
     "customerName": "cc",
-    "isOffLine": "false"
+    "isOffLine": "true"
   },
   {
     "mdId": "10007",
@@ -53,7 +53,7 @@
     "clientName": "0.0.4 Build20190619",
     "heartBeat": "2019-09-12 15:06:29.620",
     "customerName": "cc",
-    "isOffLine": "false"
+    "isOffLine": "true"
   },
   {
     "mdId": "10008",
@@ -69,6 +69,6 @@
     "clientName": "0.0.4 Build20190619",
     "heartBeat": "2019-09-12 15:05:44.630",
     "customerName": "cc",
-    "isOffLine": "false"
+    "isOffLine": "true"
   }
 ]
