@@ -211,7 +211,7 @@ const HandleMenuClick = (page="") => {
 const PageContent = () => {
     switch (store.getState().managerState.currPage) {
         case "welcome":
-            return <Welcome/>;
+            return <Welcome wsAddress={store.getState().managerState.wsAddress} />;
         case "testPage01":
             return <Test/>;
         case "Z5MdDataTrans":
@@ -219,6 +219,6 @@ const PageContent = () => {
         case "Z9MdDataTransV2":
             return <HeartBeatMonitor type={"Z9MdDataTransV2"} />;
         default:
-            return <Welcome/>;
+            return <Welcome  wsAddress={store.getState().managerState.wsAddress} />;
     }
 };

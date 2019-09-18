@@ -6,3 +6,10 @@ export const HeartbeatDataAction = (d=[]) => (
         heartbeatData:d
     }
 );
+
+export const WsAddressAction = (address="") => (
+    {
+        type:C.WsAddress,
+        wsAddress:address,
+    }
+);

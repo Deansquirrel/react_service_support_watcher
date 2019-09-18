@@ -6,11 +6,13 @@ import "./welcome.css"
 import {combineReducers, createStore} from "redux";
 import {welcomeState} from "./reducer";
 
-import testD from "./data";
-import {HeartbeatDataAction} from "./actions";
+import {HeartbeatDataAction,WsAddressAction} from "./actions";
+import PropTypes from "prop-types";
+import {GetHeartbeatErrData} from "../DataInterface/common";
 
 const defaultState = {
     welcomeState:{
+        wsAddress:"",
         heartbeatData:[]
     },
 };
@@ -21,16 +23,34 @@ const store = createStore(
 );
 
 export class Welcome extends Component {
+    static propTypes = {
+        wsAddress:PropTypes.string,
+    };
+
+    static defaultProps = {
+        wsAddress:"",
+    };
+
+
     componentDidMount() {
         this.unsubscribe = store.subscribe(
             () => this.forceUpdate()
         );
         setStoreDefault();
-        store.dispatch(HeartbeatDataAction(testD.heartbeatData));
+        store.dispatch(WsAddressAction(this.props.wsAddress));
     }
 
     componentWillUnmount() {
-        this.unsubscribe()
+        this.unsubscribe();
+        clearInterval(this.refershHeartbeatErrDataJob);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(this.props.wsAddress!==prevProps.wsAddress){
+            store.dispatch(WsAddressAction(this.props.wsAddress));
+            refreshHeartbeatErrData();
+            this.refershHeartbeatErrDataJob = setInterval(refreshHeartbeatErrData,5000);
+        }
     }
 
     render() {
@@ -49,22 +69,37 @@ export class Welcome extends Component {
 }
 
 const setStoreDefault = () => {
+    store.dispatch(WsAddressAction(defaultState.welcomeState.wsAddress));
     store.dispatch(HeartbeatDataAction(defaultState.welcomeState.heartbeatData));
+};
+
+const refreshHeartbeatErrData = () => {
+    if(store.getState().welcomeState.wsAddress !== ""){
+        GetHeartbeatErrData(
+            store.getState().welcomeState.wsAddress,
+            "",
+            (heartbeatData)=>store.dispatch(HeartbeatDataAction(heartbeatData)),
+            (errMsg)=>console.log(errMsg)
+        )
+    }
 };
 
 const HeartBeatErr = () => {
     const columns = [
         {
-            title:"customer",
-            dataIndex:"name",
-            key:"name"
+            title:"Type",
+            dataIndex:"type",
+            key:"type"
         },
         {
             title:"count",
             dataIndex:"count",
         }
     ];
-    const d = GetHeartBeatErrData();
+    const d = store.getState().welcomeState.heartbeatData.filter((item)=>{
+        return item.hasOwnProperty("count") && item.count > 0
+    });
+    console.log(d);
     let t = 0;
     d.map((item)=>{
         if(item.hasOwnProperty("count")){
@@ -77,7 +112,7 @@ const HeartBeatErr = () => {
             <h3 style={{color:t>0?"#ff0000":"#000000"}}>心跳异常({t})</h3>
             <Table
                 style={{marginTop:"24px"}}
-                rowKey={"name"}
+                rowKey={"type"}
                 showHeader={false}
                 pagination={false}
                 bordered={false}
@@ -87,10 +122,4 @@ const HeartBeatErr = () => {
             />
         </div>
     )
-};
-
-const GetHeartBeatErrData = () => {
-    return store.getState().welcomeState.heartbeatData.filter((item)=>{
-        return item.hasOwnProperty("count") && item.count > 0
-    })
 };

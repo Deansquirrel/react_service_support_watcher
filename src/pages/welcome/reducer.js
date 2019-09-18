@@ -7,6 +7,11 @@ export const welcomeState = (state={},action={}) => {
                 ...state,
                 heartbeatData:action.heartbeatData
             };
+        case C.WsAddress:
+            return {
+                ...state,
+                wsAddress:action.wsAddress,
+            };
         default:
             return state;
     }
