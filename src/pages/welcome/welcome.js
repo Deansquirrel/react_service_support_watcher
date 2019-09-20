@@ -38,6 +38,9 @@ export class Welcome extends Component {
         );
         setStoreDefault();
         store.dispatch(WsAddressAction(this.props.wsAddress));
+
+        refreshHeartbeatErrData();
+        this.refershHeartbeatErrDataJob = setInterval(refreshHeartbeatErrData,60000);
     }
 
     componentWillUnmount() {
@@ -49,16 +52,15 @@ export class Welcome extends Component {
         if(this.props.wsAddress!==prevProps.wsAddress){
             store.dispatch(WsAddressAction(this.props.wsAddress));
             refreshHeartbeatErrData();
-            this.refershHeartbeatErrDataJob = setInterval(refreshHeartbeatErrData,5000);
         }
     }
 
     render() {
         return (
-            <div className={"ContentMargin"} style={{height:"100%"}}>
+            <div className={"ContentMargin"} style={{height:"100%",width:"100%"}}>
                 <div style={{marginBottom:"32px"}}>
                     <Row gutter={16}>
-                        <Col span={8}>
+                        <Col span={6}>
                             <HeartBeatErr />
                         </Col>
                     </Row>
@@ -99,7 +101,6 @@ const HeartBeatErr = () => {
     const d = store.getState().welcomeState.heartbeatData.filter((item)=>{
         return item.hasOwnProperty("count") && item.count > 0
     });
-    console.log(d);
     let t = 0;
     d.map((item)=>{
         if(item.hasOwnProperty("count")){

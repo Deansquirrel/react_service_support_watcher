@@ -75,3 +75,8 @@ export const GetHeartbeatErrData = (baseAddress="",typeList="",successFunc=f=>f,
             errFunc(error.toString())
         })
 };
+
+//HeartbeatMonitor页面获取心跳数据
+export const GetHeartbeatMonitorData = (type="") => {
+    //TODO
+};
