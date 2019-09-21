@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Col, Row,Table} from "antd";
+import {Col, Row,Table,message} from "antd";
 
 import "../common.css"
 import "./welcome.css"
@@ -79,9 +79,9 @@ const refreshHeartbeatErrData = () => {
     if(store.getState().welcomeState.wsAddress !== ""){
         GetHeartbeatErrData(
             store.getState().welcomeState.wsAddress,
-            "",
+            "Z5MdDataTrans|Z9MdDataTransV2",
             (heartbeatData)=>store.dispatch(HeartbeatDataAction(heartbeatData)),
-            (errMsg)=>console.log(errMsg)
+            (errMsg)=>message.error(errMsg)
         )
     }
 };

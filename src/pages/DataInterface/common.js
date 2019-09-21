@@ -77,6 +77,76 @@ export const GetHeartbeatErrData = (baseAddress="",typeList="",successFunc=f=>f,
 };
 
 //HeartbeatMonitor页面获取心跳数据
-export const GetHeartbeatMonitorData = (type="") => {
-    //TODO
+export const GetHeartbeatMonitorData = (baseAddress="",type="",successFunc=f=>f,errFunc=f=>f) => {
+    if(baseAddress===""){
+        errFunc("address is empty");
+        return
+    }
+    let requestData = {"type":type};
+    const url = baseAddress + "/watchersupport/heartbeatMonitorData";
+    axios.post(url,requestData)
+        .then(function(response){
+            if(response.status===200){
+                let infoData = response.data;
+                if(infoData.errcode !== undefined) {
+                    if(infoData.errcode===200){
+                        if(infoData.data !== undefined){
+                            successFunc(infoData.data);
+                        } else {
+                            errFunc("get data err:data return do not contain data");
+                        }
+                    } else {
+                        errFunc(infoData.errmsg);
+                    }
+                } else {
+                    errFunc("get data err:data return do not contain errcode");
+                }
+            } else {
+                const errMsg = "http error: " +
+                    "status-" + response.status +
+                    ",statusText-" + response.statusText +
+                    ",data-" + JSON.stringify(response.data);
+                errFunc(errMsg);
+            }
+        })
+        .catch(function(error){
+            errFunc(error.toString())
+        })
+};
+
+//HeartbeatMonitor页面DelHeartbeat
+export const DelHeartbeat = (baseAddress="",clientId="",successFunc=f=>f,errFunc=f=>f,fFunc=f=>f) => {
+    if(baseAddress===""){
+        errFunc("address is empty");
+        return
+    }
+    let requestData = {"clientId":clientId};
+    const url = baseAddress + "/watchersupport/delHeartbeat";
+    axios.post(url,requestData)
+        .then(function(response){
+            if(response.status===200){
+                let infoData = response.data;
+                if(infoData.errcode !== undefined) {
+                    if(infoData.errcode===200){
+                        successFunc();
+                    } else {
+                        errFunc(infoData.errmsg);
+                    }
+                } else {
+                    errFunc("get data err:data return do not contain errcode");
+                }
+            } else {
+                const errMsg = "http error: " +
+                    "status-" + response.status +
+                    ",statusText-" + response.statusText +
+                    ",data-" + JSON.stringify(response.data);
+                errFunc(errMsg);
+            }
+        })
+        .catch(function(error){
+            errFunc(error.toString());
+        })
+        .finally(function(){
+            fFunc();
+        })
 };

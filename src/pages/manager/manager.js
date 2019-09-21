@@ -215,9 +215,15 @@ const PageContent = () => {
         case "testPage01":
             return <Test/>;
         case "Z5MdDataTrans":
-            return <HeartBeatMonitor type={"Z5MdDataTrans"} />;
+            return <HeartBeatMonitor
+                wsAddress={store.getState().managerState.wsAddress}
+                type={"Z5MdDataTrans"}
+            />;
         case "Z9MdDataTransV2":
-            return <HeartBeatMonitor type={"Z9MdDataTransV2"} />;
+            return <HeartBeatMonitor
+                wsAddress={store.getState().managerState.wsAddress}
+                type={"Z9MdDataTransV2"}
+            />;
         default:
             return <Welcome  wsAddress={store.getState().managerState.wsAddress} />;
     }

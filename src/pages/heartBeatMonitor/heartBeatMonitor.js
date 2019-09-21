@@ -1,20 +1,22 @@
 import React, {Component} from "react";
 // import {Button,Divider,Spin} from 'antd';
-import {Row,Col,Tabs,Table,Statistic } from 'antd';
+import {Row, Col, Tabs, Table, Statistic, message} from 'antd';
 import PropTypes from 'prop-types';
 import {combineReducers, createStore} from "redux";
 import {heartBeatMonitorState} from "./reducer";
-import {CustomerAction, HeartBeatDataAction, LoadingAction, TypeAction} from "./actions";
+import {CustomerAction, HeartBeatDataAction, WsAddressAction, TypeAction, LoadingAction} from "./actions";
 
 import "../common.css"
 import "./heartBeatMonitor.css"
 import moment from "moment";
 
-import d from "./data";
+import {DelHeartbeat, GetHeartbeatMonitorData} from "../DataInterface/common";
+import {jsonSort} from "./common";
 
 const defaultState = {
     heartBeatMonitorState:{
         type:"",
+        wsAddress:"",
         loading:false,
         customer:"aa",
         heartbeatData:[],
@@ -28,18 +30,20 @@ const store = createStore(
 );
 
 const setStoreDefault = () => {
-    store.dispatch(LoadingAction(true));
+    // store.dispatch(LoadingAction(true));
     store.dispatch(TypeAction(defaultState.heartBeatMonitorState.type));
-    store.dispatch(LoadingAction(false));
+    store.dispatch(WsAddressAction(defaultState.heartBeatMonitorState.wsAddress));
+    store.dispatch(CustomerAction(defaultState.heartBeatMonitorState.customer));
+    store.dispatch(HeartBeatDataAction(defaultState.heartBeatMonitorState.heartbeatData));
+    // store.dispatch(LoadingAction(false));
 };
 
-const refreshHeartbeatData = () => {
-    store.dispatch(HeartBeatDataAction(d));
-    const customerList = GetCustomerList();
-    if(customerList.length > 0){
-        store.dispatch(CustomerAction(customerList[0]));
-    } else {
-        store.dispatch(CustomerAction(""));
+const setStoreProps = (props={}) => {
+    if (props.hasOwnProperty("wsAddress")) {
+        store.dispatch(WsAddressAction(props.wsAddress));
+    }
+    if (props.hasOwnProperty("type")){
+        store.dispatch(TypeAction(props.type));
     }
 };
 
@@ -48,21 +52,71 @@ const GetCustomerList = () => {
     let rList = [];
     // eslint-disable-next-line
     {data.map((item)=>{
-        if(item.hasOwnProperty("customerName")&&rList.indexOf(item.customerName)<0){
-            rList.push(item.customerName);
+        if(item.hasOwnProperty("coUserAb")&&rList.indexOf(item.coUserAb)<0){
+            rList.push(item.coUserAb);
         }
         return item;
     })}
     return rList;
 };
 
+const refreshHeartbeatMonitorData = () => {
+    if(store.getState().heartBeatMonitorState.wsAddress !== ""){
+        GetHeartbeatMonitorData(
+            store.getState().heartBeatMonitorState.wsAddress,
+            store.getState().heartBeatMonitorState.type,
+            // (heartbeatData)=>refreshHeartbeatData(heartbeatData),
+            (data)=>refreshHeartbeatData(data),
+            (errMsg)=>message.error(errMsg)
+        )
+    }
+};
+
+const refreshHeartbeatData = (d=[]) => {
+    d = jsonSort(d,"coId");
+    store.dispatch(HeartBeatDataAction(d));
+    const customerList = GetCustomerList();
+
+    if(customerList.length > 0){
+        if(store.getState().heartBeatMonitorState.customer===defaultState.heartBeatMonitorState.customer){
+            store.dispatch(CustomerAction(customerList[0]));
+        } else {
+            if(customerList.indexOf(store.getState().heartBeatMonitorState.customer)<0){
+                store.dispatch(CustomerAction(customerList[0]));
+            }
+        }
+    } else {
+        if(store.getState().heartBeatMonitorState.customer!==defaultState.heartBeatMonitorState.customer){
+            store.dispatch(CustomerAction(defaultState.heartBeatMonitorState.customer));
+        }
+    }
+    // if(store.getState().heartBeatMonitorState.customer===defaultState.heartBeatMonitorState.customer
+    //     && customerList.length > 0){
+    //     store.dispatch(CustomerAction(customerList[0]));
+    // } else {
+    //     store.dispatch(CustomerAction(defaultState.heartBeatMonitorState.customer));
+    // }
+};
+
+const delHeartbeat =(clientId="") => {
+    store.dispatch(LoadingAction(true));
+    DelHeartbeat(store.getState().heartBeatMonitorState.wsAddress,
+        clientId,
+        ()=>refreshHeartbeatMonitorData(),
+        (msg)=>message.error(msg),
+        ()=>store.dispatch(LoadingAction(false))
+        )
+};
+
 export class HeartBeatMonitor extends Component {
     static propTypes = {
         type:PropTypes.string,
+        wsAddress:PropTypes.string,
     };
 
     static defaultProps = {
         type:"",
+        wsAddress:"",
     };
 
     componentDidMount() {
@@ -70,19 +124,22 @@ export class HeartBeatMonitor extends Component {
             () => this.forceUpdate()
         );
         setStoreDefault();
-
-        store.dispatch(TypeAction(this.props.type));
-        refreshHeartbeatData();
+        setStoreProps(this.props);
+        refreshHeartbeatMonitorData();
+        this.refreshHeartbeatMonitorDataJob = setInterval(refreshHeartbeatMonitorData,60000);
     }
 
     componentWillUnmount() {
-        this.unsubscribe()
+        this.unsubscribe();
+        clearInterval(this.refreshHeartbeatMonitorDataJob);
+        setStoreDefault();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(this.props.type!==prevProps.type){
+        if(this.props!==prevProps){
             setStoreDefault();
-            store.dispatch(TypeAction(this.props.type));
+            setStoreProps(this.props);
+            refreshHeartbeatMonitorData();
         }
     }
 
@@ -185,8 +242,8 @@ const CustomerInfo = () => {
 const GetNData = (customer="") => {
     // const c = store.getState().heartBeatMonitorState.customer;
     return store.getState().heartBeatMonitorState.heartbeatData.filter((item)=>{
-        return item.hasOwnProperty("customerName")
-            && item.customerName === customer
+        return item.hasOwnProperty("coUserAb")
+            && item.coUserAb === customer
             && item.hasOwnProperty("isOffLine")
             && item.isOffLine === "false"
     });
@@ -195,8 +252,8 @@ const GetNData = (customer="") => {
 const GetEData = (customer="") => {
     // const c = store.getState().heartBeatMonitorState.customer;
     return store.getState().heartBeatMonitorState.heartbeatData.filter((item)=>{
-        return item.hasOwnProperty("customerName")
-            && item.customerName === customer
+        return item.hasOwnProperty("coUserAb")
+            && item.coUserAb === customer
             && item.hasOwnProperty("isOffLine")
             && item.isOffLine === "true"
     });
@@ -216,7 +273,12 @@ const CustomerInfoDetail = () => {
             <span style={{float:'right',marginRight:'16px',marginTop:'8px'}}>
                 最后刷新时间：{store.getState().heartBeatMonitorState.lastRefresh.format("YYYY-MM-DD HH:mm:ss")}
             </span>
-            <DataPanel title={"异常心跳"} titleColor={GetEData(c).length>0?"#ff0000":"#000000"} data={GetEData(c)} />
+            <DataPanel
+                title={"异常心跳"}
+                titleColor={GetEData(c).length>0?"#ff0000":"#000000"}
+                data={GetEData(c)}
+                del={true}
+            />
             <DataPanel title={"正常心跳"} data={GetNData(c)} />
         </div>
     )
@@ -225,32 +287,74 @@ const CustomerInfoDetail = () => {
 const TableColumns = [
     {
         title: 'ClientID',
-        dataIndex: 'customerName',
+        dataIndex: 'clientId',
         key: 'clientId',
     },
     {
-        title: '门店ID',
-        dataIndex: 'mdId',
-        key: 'mdId',
+        title: 'ClientVersion',
+        dataIndex: 'clientVersion',
+        key: 'clientVersion',
     },
     {
-        title: '门店名称',
-        dataIndex: 'mdName',
-        key: 'mdName',
+        title: '机构ID',
+        dataIndex: 'coId',
+        key: 'coId',
+    },
+    {
+        title: '名称',
+        dataIndex: 'coAb',
+        key: 'coAb',
+    },
+    {
+        title: '版本',
+        dataIndex: 'svVer',
+        key: 'svVer',
     },
     {
         title: '最后心跳时间',
-        dataIndex: 'heartBeat',
-        key: 'heartBeat',
+        dataIndex: 'heartbeat',
+        // key: 'heartbeat',
+    }
+];
+const TableColumnsWithDel = [
+    {
+        title: 'ClientID',
+        dataIndex: 'clientId',
+        key: 'clientId',
+    },
+    {
+        title: 'ClientVersion',
+        dataIndex: 'clientVersion',
+        key: 'clientVersion',
+    },
+    {
+        title: '机构ID',
+        dataIndex: 'coId',
+        key: 'coId',
+    },
+    {
+        title: '名称',
+        dataIndex: 'coAb',
+        key: 'coAb',
+    },
+    {
+        title: '版本',
+        dataIndex: 'svVer',
+        key: 'svVer',
+    },
+    {
+        title: '最后心跳时间',
+        dataIndex: 'heartbeat',
+        // key: 'heartbeat',
     },
     {
         title: "Action",
         dataIndex: '',
-        key: 'x',
+        // key: 'x',
         render: (d) => (
             <span onClick={() => {
-                if(d.hasOwnProperty("mdId")){
-                    console.log(d.mdId)
+                if(d.hasOwnProperty("clientId")){
+                    delHeartbeat(d.clientId);
                 }
             }} style={{cursor:"pointer",color:"#1890ff"}}>
                 Delete
@@ -259,17 +363,26 @@ const TableColumns = [
     }
 ];
 
-const DataPanel = ({title="",titleColor="#000000",data=[]}) => {
+const DataPanel = ({title="",titleColor="#000000",data=[],del=false}) => {
     return (
         <div style={{marginTop:'16px'}}>
             <h2 style={{marginLeft:'8px',color:titleColor}}>{title}({data.length})</h2>
             <Table
-                rowKey={"mdId"}
+                rowKey={(r)=>{
+                    let k = "";
+                    if(r.hasOwnProperty("clientId")){
+                        k = k + r.clientId
+                    }
+                    if(r.hasOwnProperty("coId")){
+                        k = k + r.coId
+                    }
+                    return k;
+                }}
                 loading={store.getState().heartBeatMonitorState.loading}
                 bordered
                 pagination={false}
                 dataSource={data}
-                columns={TableColumns}/>
+                columns={del?TableColumnsWithDel:TableColumns}/>
         </div>
     );
 };

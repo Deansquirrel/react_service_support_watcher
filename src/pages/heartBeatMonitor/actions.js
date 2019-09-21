@@ -7,6 +7,14 @@ export const TypeAction = (type="") => (
     }
 );
 
+export const WsAddressAction = (address="") => (
+    {
+        type:C.WsAddress,
+        wsAddress:address,
+    }
+);
+
+
 export const LoadingAction = (l=false) => (
     {
         type:C.Loading,

@@ -41,7 +41,7 @@ class App extends Component {
         }
         GetWsAddress(
             (address)=>store.dispatch(WsAddressAction(address)),
-            (err)=>console.warn(err)
+            (err)=>message.error(err)
         ).then();
     }
 
@@ -160,7 +160,7 @@ const appState = (state={},action={}) => {
                 GetWsVersionInfo(
                     action.wsAddress,
                     (wsVersion)=>store.dispatch(WsVersionAction(wsVersion)),
-                    (err)=>console.log(err)
+                    (err)=>message.error(err)
                 );
             }
             return {

@@ -2,6 +2,11 @@ import C from "./constants"
 
 export const heartBeatMonitorState = (state={},action={}) => {
     switch (action.type) {
+        case C.WsAddress:
+            return {
+                ...state,
+                wsAddress:action.wsAddress,
+            };
         case C.Type:
             return {
                 ...state,
@@ -16,11 +21,6 @@ export const heartBeatMonitorState = (state={},action={}) => {
             return {
                 ...state,
                 customer:action.customer,
-            };
-        case C.CustomerList:
-            return {
-                ...state,
-                customerList:action.customerList,
             };
         case C.HeartBeatData:
             return {

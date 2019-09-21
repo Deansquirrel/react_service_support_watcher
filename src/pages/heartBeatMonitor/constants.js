@@ -1,8 +1,8 @@
 const constants = {
     Type:"TYPE",
+    WsAddress:"WS_ADDRESS",
     Loading:"LOADING",
     Customer:"CUSTOMER",
-    CustomerList:"CUSTOMER_LIST",
     HeartBeatData:"HEART_BEAT_DATA",
 };
 
