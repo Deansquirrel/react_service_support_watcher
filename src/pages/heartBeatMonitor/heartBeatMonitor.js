@@ -11,7 +11,7 @@ import "./heartBeatMonitor.css"
 import moment from "moment";
 
 import {DelHeartbeat, GetHeartbeatMonitorData} from "../DataInterface/common";
-import {jsonSort} from "./common";
+import {jsonSort} from "../../common";
 
 const defaultState = {
     heartBeatMonitorState:{
@@ -57,7 +57,7 @@ const GetCustomerList = () => {
         }
         return item;
     })}
-    return rList;
+    return rList.sort();
 };
 
 const refreshHeartbeatMonitorData = () => {
@@ -137,7 +137,7 @@ export class HeartBeatMonitor extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if(this.props!==prevProps){
-            setStoreDefault();
+            // setStoreDefault();
             setStoreProps(this.props);
             refreshHeartbeatMonitorData();
         }
