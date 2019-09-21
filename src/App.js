@@ -187,7 +187,7 @@ const defaultState = {
         version:"",
         wsVersion:"",
         wsAddress:"",
-        currPage:"manager",
+        currPage:"",
         cId:"",
     },
 };
