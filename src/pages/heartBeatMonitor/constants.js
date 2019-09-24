@@ -4,6 +4,7 @@ const constants = {
     Loading:"LOADING",
     Customer:"CUSTOMER",
     HeartBeatData:"HEART_BEAT_DATA",
+    LastRefresh:"LAST_REFRESH",
 };
 
 export default constants;

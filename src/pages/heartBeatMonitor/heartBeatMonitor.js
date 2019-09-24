@@ -4,7 +4,14 @@ import {Row, Col, Tabs, Table, Statistic, message} from 'antd';
 import PropTypes from 'prop-types';
 import {combineReducers, createStore} from "redux";
 import {heartBeatMonitorState} from "./reducer";
-import {CustomerAction, HeartBeatDataAction, WsAddressAction, TypeAction, LoadingAction} from "./actions";
+import {
+    CustomerAction,
+    HeartBeatDataAction,
+    WsAddressAction,
+    TypeAction,
+    LoadingAction,
+    LastRefreshAction
+} from "./actions";
 
 import "../common.css"
 import "./heartBeatMonitor.css"
@@ -20,7 +27,7 @@ const defaultState = {
         loading:false,
         customer:"aa",
         heartbeatData:[],
-        lastRefresh:new moment(),
+        lastRefresh:"",
     },
 };
 
@@ -75,6 +82,11 @@ const refreshHeartbeatMonitorData = () => {
 const refreshHeartbeatData = (d=[]) => {
     d = jsonSort(d,"coId");
     store.dispatch(HeartBeatDataAction(d));
+
+    const t = new moment();
+    store.dispatch(LastRefreshAction(t.format("YYYY-MM-DD HH:mm:ss")));
+    console.log(t.format("YYYY-MM-DD HH:mm:ss"));
+
     const customerList = GetCustomerList();
 
     if(customerList.length > 0){
@@ -126,7 +138,7 @@ export class HeartBeatMonitor extends Component {
         setStoreDefault();
         setStoreProps(this.props);
         refreshHeartbeatMonitorData();
-        this.refreshHeartbeatMonitorDataJob = setInterval(refreshHeartbeatMonitorData,60000);
+        this.refreshHeartbeatMonitorDataJob = setInterval(refreshHeartbeatMonitorData,5000);
     }
 
     componentWillUnmount() {
@@ -271,7 +283,7 @@ const CustomerInfoDetail = () => {
     return (
         <div className={"heartbeat_customer_info_detail"}>
             <span style={{float:'right',marginRight:'16px',marginTop:'8px'}}>
-                最后刷新时间：{store.getState().heartBeatMonitorState.lastRefresh.format("YYYY-MM-DD HH:mm:ss")}
+                最后刷新时间：{store.getState().heartBeatMonitorState.lastRefresh}
             </span>
             <DataPanel
                 title={"异常心跳"}

@@ -27,6 +27,11 @@ export const heartBeatMonitorState = (state={},action={}) => {
                 ...state,
                 heartbeatData:action.heartbeatData,
             };
+        case C.LastRefresh:
+            return {
+                ...state,
+                lastRefresh:action.lastRefresh,
+            };
         default:
             return state;
     }

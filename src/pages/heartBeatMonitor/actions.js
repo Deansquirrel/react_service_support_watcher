@@ -35,3 +35,10 @@ export const HeartBeatDataAction = (d=[]) => (
         heartbeatData:d,
     }
 );
+
+export const LastRefreshAction = (t="") => (
+    {
+        type:C.LastRefresh,
+        lastRefresh: t,
+    }
+);
