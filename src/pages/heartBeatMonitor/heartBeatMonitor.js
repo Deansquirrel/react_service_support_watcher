@@ -85,7 +85,6 @@ const refreshHeartbeatData = (d=[]) => {
 
     const t = new moment();
     store.dispatch(LastRefreshAction(t.format("YYYY-MM-DD HH:mm:ss")));
-    console.log(t.format("YYYY-MM-DD HH:mm:ss"));
 
     const customerList = GetCustomerList();
 
