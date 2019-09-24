@@ -138,7 +138,7 @@ export class HeartBeatMonitor extends Component {
         setStoreDefault();
         setStoreProps(this.props);
         refreshHeartbeatMonitorData();
-        this.refreshHeartbeatMonitorDataJob = setInterval(refreshHeartbeatMonitorData,5000);
+        this.refreshHeartbeatMonitorDataJob = setInterval(refreshHeartbeatMonitorData,60000);
     }
 
     componentWillUnmount() {
